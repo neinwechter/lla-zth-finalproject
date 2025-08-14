@@ -10,7 +10,7 @@
 #include "../include/parse.h"
 #include "../include/common.h"
 
-int output_file(int fd, struct dbheader_t *header) {
+int output_file(int fd, struct dbheader_t *header, void *future) {
     if (fd < 0 || header == NULL) {
         printf("Bad FD or header in output_file\n");
         return STATUS_ERROR;
