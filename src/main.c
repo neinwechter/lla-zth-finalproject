@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     bool newfile =  false;
     int c;
     int dbfd = -1;
-    struct db_header_t *header = NULL;
+    struct dbheader_t *header = NULL;
 
     while ((c = getopt(argc, argv, "nhf:")) != -1) {
         switch (c) {
