@@ -73,7 +73,9 @@ int main(int argc, char *argv[]) {
       
         if (validate_db_header(dbfd, &header) == STATUS_ERROR) {
             printf("Invalid database header in file %s\n", filepath);
-            free(header);
+            if (header) {
+                free(header);
+            }
             close(dbfd);
             return -1;
         }
