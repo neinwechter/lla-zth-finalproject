@@ -3,9 +3,11 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 #include "../include/file.h"
 #include "../include/common.h"
+#include "../include/parse.h"
 
 int create_db_file(char *filename) {
     int fd = open(filename, O_RDONLY);
