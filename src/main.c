@@ -12,6 +12,7 @@
 void print_usage(char *argv[]) {
     printf("Usage: %s -n -f <database file>\n", argv[0]);
     printf("\t-f <database file>\tThe employee database file (REQUIRED)\n");
+    printf("\t-a <CSV user>\t\"Name,Address,Hours\"\n");
     printf("\t-n\t\t\tCreate new database file (defualt: NO)\n");
     printf("\t-h\t\t\tDisplay usage information\n");
     printf("\n");
@@ -21,17 +22,22 @@ void print_usage(char *argv[]) {
 int main(int argc, char *argv[]) {
     char *filepath = NULL;
     bool newfile =  false;
+    char *addstring = NULL;
     int c;
     int dbfd = -1;
     struct dbheader_t *header = NULL;
+    struct employee_t *employees = NULL;
 
-    while ((c = getopt(argc, argv, "nhf:")) != -1) {
+    while ((c = getopt(argc, argv, "nhf:a:")) != -1) {
         switch (c) {
             case 'n':
                 newfile = true;
                 break;
             case 'f':
                 filepath = optarg;
+                break;
+            case 'a':
+                addstring = optarg;
                 break;
             case 'h':
                 print_usage(argv);
@@ -61,8 +67,6 @@ int main(int argc, char *argv[]) {
             return -1;
         }
 
-        output_file(dbfd, header, NULL);
-
     }
     else {
         dbfd = open_db_file(filepath);
@@ -81,5 +85,21 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    if (read_employees(dbfd, header, &employees) != STATUS_SUCCESS) {
+        printf("Failed to read employees from database file %s\n", filepath);
+        if (header) {
+            free(header);
+        }
+        close(dbfd);
+        return -1;
+    }
+    
+    if (addstring != NULL) {
+        header->count++;
+        employees = realloc(employees, header->count * sizeof(struct employee_t));
+        add_employee(header, employees, addstring);
+    }
+
+    output_file(dbfd, header, employees);
     return 0;
 }

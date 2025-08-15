@@ -6,26 +6,72 @@
 #include <file.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
+#include <string.h>
 
 #include "../include/parse.h"
 #include "../include/common.h"
 
-int output_file(int fd, struct dbheader_t *header, void *future) {
+int add_employee(struct dbheader_t *header, struct employee_t *employees, char *addstring) {
+    if (header == NULL || employees == NULL || addstring == NULL) {
+        printf("Bad header, employees, or addstring in add_employee\n");
+        return STATUS_ERROR;
+    }
+
+    char *name = strtok(addstring, ",");
+    char *addr = strtok(NULL, ",");
+    char *hours = strtok(NULL, ",");
+
+    strncpy(employees[header->count-1].name, name, sizeof(employees[header->count-1].name) - 1);
+    strncpy(employees[header->count-1].address, addr, sizeof(employees[header->count-1].address) - 1);
+    employees[header->count-1].hours = atoi(hours);
+
+    return STATUS_SUCCESS;
+}
+
+int read_employees(int fd, struct  dbheader_t *dbhdr, struct employee_t **employeesOut) {
+    if (fd < 0 || employeesOut == NULL) {
+        printf("Bad FD or employeesOut in read_employees\n");
+        return STATUS_ERROR;
+    }
+
+    int count = dbhdr->count;
+    
+    struct employee_t *employees = calloc(count, sizeof(struct employee_t));
+    if (!employees) {
+        perror("calloc");
+        return STATUS_ERROR;
+    }
+    read(fd, employees, count * sizeof(struct employee_t));
+    for (int i = 0; i < count; i++) {
+        employees[i].hours = ntohl(employees[i].hours);
+    }
+    *employeesOut = employees;
+    return STATUS_SUCCESS;
+}
+
+int output_file(int fd, struct dbheader_t *header, struct employee_t *employees) {
     if (fd < 0 || header == NULL) {
         printf("Bad FD or header in output_file\n");
         return STATUS_ERROR;
     }
 
+    int realcount = header->count;
+
     header->magic = htonl(header->magic);
     header->version = htons(header->version);
     header->count = htons(header->count);
-    header->filesize = htonl(header->filesize);
+    header->filesize = htonl(sizeof(struct dbheader_t) + realcount * sizeof(struct employee_t));
 
     lseek(fd, 0, SEEK_SET);
     ssize_t bytesWritten = write(fd, header, sizeof(struct dbheader_t));
     if (bytesWritten != sizeof(struct dbheader_t)) {
         perror("write");
         return STATUS_ERROR;   
+    }
+
+    for (int i = 0; i < realcount; i++) {
+        employees[i].hours = htonl(employees[i].hours);
+        write(fd, &employees[i], sizeof(struct employee_t));
     }
 
     return 0;
