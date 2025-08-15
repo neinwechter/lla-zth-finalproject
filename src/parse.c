@@ -12,7 +12,7 @@
 #include "../include/common.h"
 
 int add_employee(struct dbheader_t *header, struct employee_t *employees, char *addstring) {
-    if (header == NULL || employees == NULL || addstring == NULL || header->count <= 0) {
+    if (header == NULL || employees == NULL || addstring == NULL) {
         printf("Bad header, employees, or addstring in add_employee\n");
         return STATUS_ERROR;
     }
