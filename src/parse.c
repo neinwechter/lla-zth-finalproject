@@ -11,7 +11,7 @@
 #include "../include/parse.h"
 #include "../include/common.h"
 
-int add_employee(struct dbheader_t *header, struct employee_t *employees, char *addstring) {
+int add_employee(struct dbheader_t *header, struct employee_t **employees, char *addstring) {
     if (header == NULL || employees == NULL || addstring == NULL) {
         printf("Bad header, employees, or addstring in add_employee\n");
         return STATUS_ERROR;
@@ -28,9 +28,9 @@ int add_employee(struct dbheader_t *header, struct employee_t *employees, char *
 
     int idx = header->count;
 
-    strncpy(employees[idx].name, name, sizeof(employees[idx].name) - 1);
-    strncpy(employees[idx].address, addr, sizeof(employees[idx].address) - 1);
-    employees[idx].hours = atoi(hours);
+    strncpy((*employees)[idx].name, name, sizeof((*employees)[idx].name) - 1);
+    strncpy((*employees)[idx].address, addr, sizeof((*employees)[idx].address) - 1);
+    (*employees)[idx].hours = atoi(hours);
 
     header->count++;
 
@@ -58,7 +58,7 @@ int read_employees(int fd, struct  dbheader_t *dbhdr, struct employee_t **employ
     return STATUS_SUCCESS;
 }
 
-void output_file(int fd, struct dbheader_t *header, struct employee_t *employees) {
+int output_file(int fd, struct dbheader_t *header, struct employee_t *employees) {
     if (fd < 0 || header == NULL || employees == NULL) {
         printf("Bad FD or header in output_file\n");
         return STATUS_ERROR;

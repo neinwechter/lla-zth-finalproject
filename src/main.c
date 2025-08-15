@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
             return -1;
         }
 
-        add_employee(header, employees, addstring);
+        add_employee(header, &employees, addstring);
     }
 
     output_file(dbfd, header, employees);
