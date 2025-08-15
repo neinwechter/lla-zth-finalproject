@@ -97,6 +97,13 @@ int main(int argc, char *argv[]) {
     if (addstring != NULL) {
         header->count++;
         employees = realloc(employees, header->count * sizeof(struct employee_t));
+        if (!employees) {
+            perror("realloc");
+            free(header);
+            close(dbfd);
+            return STATUS_ERROR;
+        }
+        
         add_employee(header, employees, addstring);
     }
 
