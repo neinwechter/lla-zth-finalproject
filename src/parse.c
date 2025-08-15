@@ -61,7 +61,7 @@ int read_employees(int fd, struct  dbheader_t *dbhdr, struct employee_t **employ
 void output_file(int fd, struct dbheader_t *header, struct employee_t *employees) {
     if (fd < 0 || header == NULL || employees == NULL) {
         printf("Bad FD or header in output_file\n");
-        return; // STATUS_ERROR;
+        return STATUS_ERROR;
     }
 
     int realcount = header->count;
@@ -75,7 +75,7 @@ void output_file(int fd, struct dbheader_t *header, struct employee_t *employees
     ssize_t bytesWritten = write(fd, header, sizeof(struct dbheader_t));
     if (bytesWritten != sizeof(struct dbheader_t)) {
         perror("write");
-        return; //STATUS_ERROR;   
+        return STATUS_ERROR;   
     }
 
     for (int i = 0; i < realcount; i++) {
@@ -83,7 +83,7 @@ void output_file(int fd, struct dbheader_t *header, struct employee_t *employees
         write(fd, &employees[i], sizeof(struct employee_t));
     }
 
-    return; //STATUS_SUCCESS;
+    return STATUS_SUCCESS;
 
 }
 
