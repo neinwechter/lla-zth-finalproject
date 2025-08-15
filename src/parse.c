@@ -21,11 +21,16 @@ int add_employee(struct dbheader_t *header, struct employee_t *employees, char *
     char *addr = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
 
-    int count = header->count;
+    if (!name || !addr || !hours) {
+        printf("Invalid addstring format\n");
+        return STATUS_ERROR;
+    }
 
-    strncpy(employees[count].name, name, sizeof(employees[count].name) - 1);
-    strncpy(employees[count].address, addr, sizeof(employees[count].address) - 1);
-    employees[header->count].hours = atoi(hours);
+    int idx = header->count;
+
+    strncpy(employees[idx].name, name, sizeof(employees[idx].name) - 1);
+    strncpy(employees[idx].address, addr, sizeof(employees[idx].address) - 1);
+    employees[idx].hours = atoi(hours);
 
     header->count++;
 

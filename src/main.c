@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
             close(dbfd);
             return -1;
         }
-        employees = realloc(employees, (header->count+1) * sizeof(struct employee_t));
+        employees = realloc(employees, (header->count + 1) * sizeof(struct employee_t));
         if (!employees) {
             perror("realloc");
             free(header);
