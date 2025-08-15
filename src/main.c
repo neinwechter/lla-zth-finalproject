@@ -95,6 +95,11 @@ int main(int argc, char *argv[]) {
     }
     
     if (addstring != NULL) {
+        if (!header || !employees) {
+            printf("Header or employees not initialized\n");
+            close(dbfd);
+            return -1;
+        }
         header->count++;
         employees = realloc(employees, header->count * sizeof(struct employee_t));
         if (!employees) {
