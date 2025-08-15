@@ -12,7 +12,7 @@
 #include "../include/common.h"
 
 int add_employee(struct dbheader_t *header, struct employee_t *employees, char *addstring) {
-    if (header == NULL || employees == NULL || addstring == NULL || header->count <= 0) {
+    if (header == NULL || employees == NULL || addstring == NULL) {
         printf("Bad header, employees, or addstring in add_employee\n");
         return STATUS_ERROR;
     }
@@ -21,9 +21,13 @@ int add_employee(struct dbheader_t *header, struct employee_t *employees, char *
     char *addr = strtok(NULL, ",");
     char *hours = strtok(NULL, ",");
 
-    strncpy(employees[header->count-1].name, name, sizeof(employees[header->count-1].name) - 1);
-    strncpy(employees[header->count-1].address, addr, sizeof(employees[header->count-1].address) - 1);
-    employees[header->count-1].hours = atoi(hours);
+    int count = header->count;
+
+    strncpy(employees[count].name, name, sizeof(employees[count].name) - 1);
+    strncpy(employees[count].address, addr, sizeof(employees[count].address) - 1);
+    employees[header->count].hours = atoi(hours);
+
+    header->count++;
 
     return STATUS_SUCCESS;
 }
