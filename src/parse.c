@@ -50,7 +50,7 @@ int read_employees(int fd, struct  dbheader_t *dbhdr, struct employee_t **employ
 }
 
 int output_file(int fd, struct dbheader_t *header, struct employee_t *employees) {
-    if (fd < 0 || header == NULL) {
+    if (fd < 0 || header == NULL || employees == NULL) {
         printf("Bad FD or header in output_file\n");
         return STATUS_ERROR;
     }
