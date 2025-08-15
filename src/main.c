@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
             perror("realloc");
             free(header);
             close(dbfd);
-            return STATUS_ERROR;
+            return -1;
         }
 
         add_employee(header, employees, addstring);
